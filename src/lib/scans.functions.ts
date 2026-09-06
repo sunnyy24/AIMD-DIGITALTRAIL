@@ -190,7 +190,7 @@ export const analyzeScan = createServerFn({ method: "POST" })
         scan.file_type,
         scan.media_kind as "image" | "video" | "audio",
       );
-      const detections = [detection];
+      const detections = [detection, vision];
 
       await stage("fusion", "Evidence fusion");
       const fusion = fuseEvidence(detections, provenance, forensics);
