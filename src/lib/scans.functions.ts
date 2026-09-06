@@ -182,7 +182,15 @@ export const analyzeScan = createServerFn({ method: "POST" })
               scan.file_type,
               scan.media_kind as "image" | "video",
             );
-      const detections = [detection];
+      // Perceptual content analysis always runs so a verdict is possible even
+      // when no dedicated detection vendor is configured.
+      const { detectWithVision } = await import("@/lib/providers/visionDetect.server");
+      const vision = await detectWithVision(
+        bytes,
+        scan.file_type,
+        scan.media_kind as "image" | "video" | "audio",
+      );
+      const detections = [detection, vision];
 
       await stage("fusion", "Evidence fusion");
       const fusion = fuseEvidence(detections, provenance, forensics);
