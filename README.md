@@ -1,67 +1,1078 @@
-# AIMD — AI Media Detection & Digital Forensics
+# Media Sentinel
 
-AIMD analyzes uploaded **image, video and audio** files and produces an explainable,
-confidence-based assessment of whether the media is likely AI-generated, manipulated,
-or likely human-created. It never fabricates evidence: when a signal cannot be
-verified, the report says so explicitly.
+AIMD — Media Forensics & AI Provenance Upgrade
 
-## Features
+Modify my existing AIMD website. Do not rebuild the project from scratch and do not remove the existing features. Upgrade the current upload and analysis system into a professional AI Media Forensics & Provenance Platform.
 
-- **Authenticated forensic workspace** — email/password and Google sign-in.
-- **Private evidence storage** — uploads land in a private bucket under `<user_id>/<scan_id>/`.
-- **Server-side analysis pipeline** — metadata/EXIF, container brands, manipulation and
-  social-media processing indicators, C2PA/Content Credentials, SynthID (when available),
-  and third-party AI-generation detection.
-- **Rule-based evidence fusion** — transparent thresholds instead of opaque score averaging;
-  contradictory signals force an `INCONCLUSIVE` verdict.
-- **AI reasoning layer** — plain-language explanation generated strictly from normalized
-  evidence (no detection performed by the model).
-- **Chain of custody** — append-only event log, evidence ID and SHA-256 integrity re-check.
-- **Segment timeline** for video/audio, evidence explorer, technical details, downloadable
-  JSON report and print/PDF court-style report.
-- **Scan history and dashboard** with provider health and verdict distribution.
+The main goal is:
 
-## Architecture
+«When a user uploads an image, video, or audio file, AIMD should analyze the media and provide as much verifiable information as possible about its origin, device, metadata, AI generation, manipulation, social-media processing, and provenance.»
 
-```text
-src/
-  routes/
-    auth.tsx                     public sign-in / sign-up
-    _authenticated/              gated workspace (scan, results, report, history, dashboard)
-    index, analyze, reports, investigations, technology, about
-  lib/
-    scans.functions.ts           authenticated server functions (create/analyze/read/delete)
-    providers/
-      types.ts                   normalized provider contracts + disclaimer
-      hive.server.ts             AI-generation / deepfake / AI-audio detection
-      provenance.server.ts       C2PA + SynthID
-      forensic.server.ts         byte-level metadata & manipulation forensics
-      reasoning.server.ts        Lovable AI explanation layer
-    forensics/                   shared analyzers, fusion engine, history helpers
-  components/aimd/               verdict, consensus, custody, segments, upload, report UI
+1. Upgrade the Upload System
+
+Keep the existing upload UI but improve it.
+
+Support:
+
+- JPG/JPEG
+
+- PNG
+
+- WEBP
+
+- HEIC where technically possible
+
+- MP4
+
+- MOV
+
+- WEBM
+
+- MP3
+
+- WAV
+
+- M4A
+
+Allow:
+
+- Drag & drop
+
+- Browse files
+
+- Upload progress
+
+- File preview
+
+- File size
+
+- MIME type
+
+- File hash
+
+- Remove/re-upload
+
+After upload, display:
+
+«"Analyzing media forensics..."»
+
+Use a professional multi-step analysis animation:
+
+1. Reading file
+
+2. Extracting metadata
+
+3. Checking provenance
+
+4. Checking AI-generation indicators
+
+5. Checking manipulation indicators
+
+6. Checking social-media processing
+
+7. Generating forensic report
+
+Do not use fake long loading times. Use real analysis where available and clearly label unavailable analysis.
+
+---
+
+2. Image Metadata / EXIF Analysis
+
+For images, extract available metadata.
+
+Display:
+
+Device Information
+
+- Manufacturer
+
+- Camera make
+
+- Camera model
+
+- Lens
+
+- Software
+
+- Firmware if available
+
+Example:
+
+Manufacturer: Samsung
+
+Device: Samsung Galaxy S25 Ultra
+
+Model: SM-S938B
+
+Software: Samsung Camera
+
+Capture Information
+
+- Original date/time
+
+- Image dimensions
+
+- Orientation
+
+- ISO
+
+- Shutter speed
+
+- Aperture
+
+- Focal length
+
+- Flash
+
+- White balance
+
+- GPS coordinates if available
+
+If metadata is missing, NEVER guess.
+
+Show:
+
+«Metadata unavailable or removed.»
+
+Clearly distinguish between:
+
+- Confirmed metadata
+
+- Inferred information
+
+- Unavailable information
+
+---
+
+3. AI Detection
+
+Add a dedicated:
+
+AI Detection
+
+Analyze the uploaded media for AI-generation indicators.
+
+Possible result states:
+
+AI Generated
+
+Show:
+
+- AI Generated: YES
+
+- Probability
+
+- Confidence
+
+- Possible AI generator/model if evidence supports it
+
+Example:
+
+AI Generated
+
+96% confidence
+
+Possible generator:
+
+OpenAI / ChatGPT
+
+Likely Authentic
+
+Show:
+
+AI Generated: NO STRONG INDICATORS
+
+Confidence: 91%
+
+Inconclusive
+
+Show:
+
+AI Detection: INCONCLUSIVE
+
+Explain that the available evidence is insufficient.
+
+IMPORTANT:
+
+Never claim that an image was definitely generated by ChatGPT, Midjourney, Gemini, DALL-E, etc. unless reliable provenance/metadata/signature evidence supports that conclusion.
+
+Use wording such as:
+
+«Possible generator: OpenAI
+
+Confidence: 82%»
+
+rather than:
+
+«Definitely generated by ChatGPT.»
+
+---
+
+4. AI Generator Identification
+
+Create a section:
+
+Possible AI Source
+
+Try to identify the likely generator only when evidence exists.
+
+Possible sources:
+
+- OpenAI / ChatGPT
+
+- DALL·E
+
+- Midjourney
+
+- Google Gemini
+
+- Adobe Firefly
+
+- Stable Diffusion
+
+- Flux
+
+- Other / Unknown
+
+Show:
+
+Generator:
+
+OpenAI / ChatGPT
+
+Confidence:
+
+82%
+
+Evidence:
+
+- Embedded provenance
+
+- Content credentials
+
+- Metadata
+
+- AI-generation characteristics
+
+If no reliable evidence exists:
+
+«AI source could not be determined.»
+
+Do not invent a generator.
+
+---
+
+5. C2PA / Content Credentials
+
+Add support for checking C2PA / Content Credentials where technically possible.
+
+Create:
+
+Content Credentials
+
+Possible states:
+
+Verified
+
+- Credential status
+
+- Creator
+
+- Application
+
+- Creation action
+
+- Modification history
+
+- AI-generated indication
+
+Example:
+
+Content Credentials
+
+✓ Valid
+
+Created with:
+
+OpenAI
+
+Action:
+
+AI Generated
+
+Not Found
+
+«No Content Credentials found in this file.»
+
+Invalid / Modified
+
+«Content Credentials were found but could not be verified.»
+
+This feature should be clearly separated from AI detection.
+
+---
+
+6. Social Media Processing Detection
+
+Add:
+
+Social Media Analysis
+
+Analyze whether the file appears to have been processed/recompressed by a social-media platform.
+
+Possible platforms:
+
+- Instagram
+
+- Facebook
+
+- WhatsApp
+
+- X
+
+- TikTok
+
+- Telegram
+
+- YouTube
+
+Look for available technical indicators such as:
+
+- Metadata stripping
+
+- Compression
+
+- Resolution changes
+
+- Encoding characteristics
+
+- Thumbnail changes
+
+- File structure
+
+- Known platform processing patterns
+
+Example:
+
+Possible platform:
+
+Instagram
+
+Confidence:
+
+76%
+
+Status:
+
+Possible social-media processing detected.
+
+IMPORTANT:
+
+Never claim definitive platform identification unless there is reliable evidence.
+
+Use:
+
+«Possible Instagram processing»
+
+instead of:
+
+«This image definitely came from Instagram.»
+
+If there is insufficient evidence:
+
+«Social-media origin could not be determined.»
+
+---
+
+7. Image Manipulation / Tampering Detection
+
+Add:
+
+Manipulation Analysis
+
+Analyze for possible:
+
+- Image editing
+
+- Copy-move manipulation
+
+- Splicing
+
+- Face manipulation
+
+- Deepfake indicators
+
+- Unusual compression regions
+
+- Metadata inconsistencies
+
+- Re-encoding
+
+- Cropping
+
+- Resizing
+
+Show:
+
+Manipulation Risk:
+
+LOW / MEDIUM / HIGH
+
+Confidence:
+
+XX%
+
+Evidence:
+
+- Metadata inconsistency
+
+- Compression anomaly
+
+- Possible edited region
+
+If no strong evidence:
+
+«No strong manipulation indicators detected.»
+
+Do not claim that a file is authentic with 100% certainty.
+
+---
+
+8. Device Identification Logic
+
+Create a Device Information card.
+
+If EXIF contains the device:
+
+Show:
+
+✓ Device identified from metadata
+
+Example:
+
+Samsung
+
+Galaxy S25 Ultra
+
+SM-S938B
+
+If metadata is removed:
+
+Show:
+
+⚠ Device information unavailable
+
+Do NOT attempt to falsely identify the exact phone from image pixels alone.
+
+You may optionally provide:
+
+«Device inference unavailable»
+
+unless a reliable model is implemented.
+
+---
+
+9. File Forensics
+
+Add a:
+
+File Information
+
+Show:
+
+- Filename
+
+- Extension
+
+- MIME type
+
+- File size
+
+- Resolution
+
+- Duration for video/audio
+
+- Frame rate for video
+
+- Codec
+
+- Bitrate
+
+- Color space if available
+
+- SHA-256 hash
+
+- Creation/modification timestamps if available
+
+Example:
+
+SHA-256:
+
+[hash]
+
+Add a "Copy Hash" button.
+
+---
+
+10. Evidence Timeline
+
+Create:
+
+Media History / Timeline
+
+If evidence exists, show:
+
+Created
+
+↓
+
+Edited
+
+↓
+
+Exported
+
+↓
+
+Uploaded
+
+↓
+
+Reprocessed
+
+Example:
+
+2026-08-20
+
+Captured on Samsung
+
+↓
+
+2026-08-20
+
+Edited using Adobe software
+
+↓
+
+2026-08-21
+
+Metadata removed
+
+Clearly label which events are verified and which are inferred.
+
+Never invent timeline events.
+
+---
+
+11. Final Authenticity Score
+
+Create a prominent final result:
+
+AIMD Verdict
+
+Possible states:
+
+🟢 Likely Authentic
+
+🟡 Suspicious / Inconclusive
+
+🔴 Likely AI Generated
+
+🔴 Likely Manipulated
+
+Show:
+
+Confidence Score
+
+Example:
+
+92%
+
+Then provide a short explanation:
+
+«The image contains camera metadata consistent with an original Samsung capture and no strong AI-generation indicators were detected. However, complete authenticity cannot be guaranteed.»
+
+The wording must avoid absolute claims.
+
+---
+
+12. Forensic Evidence Panel
+
+Create an expandable:
+
+Evidence Found
+
+Show evidence in categories:
+
+Metadata Evidence
+
+✓ Camera model found
+
+✓ Capture timestamp found
+
+AI Evidence
+
+✓ No strong AI indicators
+
+⚠ AI source unavailable
+
+Provenance Evidence
+
+✓ C2PA credential verified
+
+Manipulation Evidence
+
+✓ No strong manipulation indicators
+
+Social Media Evidence
+
+⚠ Possible recompression
+
+Each evidence item should have:
+
+- Status
+
+- Explanation
+
+- Confidence
+
+- Source/type of evidence
+
+---
+
+13. User-Friendly Result Dashboard
+
+The result page should have a professional forensic dashboard.
+
+Top section:
+
+MEDIA FORENSIC REPORT
+
+[Media Preview]
+
+Verdict:
+
+LIKELY AUTHENTIC
+
+Confidence:
+
+94%
+
+Then cards:
+
+1. AI Detection
+
+2. Device Information
+
+3. Metadata
+
+4. Content Credentials
+
+5. Manipulation Analysis
+
+6. Social Media Analysis
+
+7. File Information
+
+8. Provenance Timeline
+
+Use clean cards, icons, progress indicators and badges.
+
+Do not overcrowd the page.
+
+---
+
+14. Detailed Technical View
+
+Add a button:
+
+«View Technical Details»
+
+When clicked, show raw/advanced information.
+
+For example:
+
+EXIF JSON
+
+Metadata
+
+C2PA information
+
+File hash
+
+Codec information
+
+Detection signals
+
+Keep this hidden by default so normal users see a simple report.
+
+---
+
+15. Download Forensic Report
+
+Add:
+
+«Download Report»
+
+Generate a professional PDF/JSON forensic report containing:
+
+- Uploaded file information
+
+- Hash
+
+- Metadata
+
+- Device information
+
+- AI detection
+
+- Possible AI source
+
+- C2PA status
+
+- Manipulation analysis
+
+- Social-media analysis
+
+- Evidence
+
+- Confidence scores
+
+- Final verdict
+
+- Timestamp of analysis
+
+The report should clearly distinguish:
+
+CONFIRMED
+
+INFERRED
+
+UNKNOWN
+
+---
+
+16. Important Accuracy Rules
+
+This is extremely important.
+
+AIMD must NEVER fabricate forensic information.
+
+If information is unavailable, show:
+
+«Not available»
+
+or:
+
+«Could not be determined»
+
+Never guess:
+
+- Device
+
+- Camera
+
+- Social platform
+
+- AI generator
+
+- Capture location
+
+- Creation date
+
+- Creator
+
+Also clearly separate:
+
+VERIFIED
+
+Information directly supported by metadata/provenance.
+
+INFERRED
+
+Information estimated by analysis.
+
+UNKNOWN
+
+Information that cannot be determined.
+
+---
+
+17. Backend Architecture
+
+Keep the current frontend architecture.
+
+Create a modular analysis pipeline:
+
+Upload
+
+→ File Validation
+
+→ Metadata Extraction
+
+→ EXIF Analysis
+
+→ C2PA/Provenance Check
+
+→ AI Detection
+
+→ Manipulation Detection
+
+→ Social Media Analysis
+
+→ Evidence Aggregation
+
+→ Verdict Generation
+
+→ Report Generation
+
+Keep each analyzer modular so future AI detection APIs/models can be plugged in easily.
+
+Do NOT hard-code fake detection results.
+
+If an external AI detection API is not configured, create a clean service interface and show:
+
+«AI detection service unavailable»
+
+instead of generating fake results.
+
+---
+
+18. API / Service Layer
+
+Create reusable services such as:
+
+- metadataAnalyzer
+
+- exifAnalyzer
+
+- provenanceAnalyzer
+
+- aiDetectionService
+
+- manipulationAnalyzer
+
+- socialMediaAnalyzer
+
+- forensicReportService
+
+Use TypeScript types/interfaces for all analysis results.
+
+Example conceptual result structure:
+
+{
+
+verdict,
+
+confidence,
+
+device,
+
+metadata,
+
+aiDetection,
+
+possibleGenerator,
+
+provenance,
+
+manipulation,
+
+socialMedia,
+
+evidence,
+
+hash
+
+}
+
+Keep the architecture scalable.
+
+---
+
+19. Privacy & Security
+
+Add a privacy notice:
+
+«Your uploaded media is analyzed securely. AIMD should not retain uploaded files longer than necessary unless the user explicitly chooses to save the analysis.»
+
+Add:
+
+- File validation
+
+- Maximum upload size
+
+- Safe file handling
+
+- No execution of uploaded files
+
+- Clear error handling
+
+---
+
+20. UI/UX Requirements
+
+Maintain the existing AIMD branding and visual identity.
+
+Make the website look like a professional cybersecurity/digital-forensics product.
+
+Use:
+
+- Modern dashboard
+
+- Clear cards
+
+- Status badges
+
+- Progress bars
+
+- Confidence meters
+
+- Expandable technical sections
+
+- Responsive mobile design
+
+- Dark/light theme compatibility if already present
+
+Avoid unnecessary animations.
+
+Prioritize readability and credibility.
+
+---
+
+21. Homepage Message
+
+Update the main messaging to communicate:
+
+«Detect AI-generated media. Analyze digital evidence. Discover media provenance.»
+
+Supporting text:
+
+«AIMD analyzes images, videos and audio using metadata, provenance, AI detection and forensic signals to help determine how digital media was created, modified and distributed.»
+
+Do not advertise impossible 100% detection accuracy.
+
+---
+
+22. Demo Example
+
+Add a demo/sample analysis option so judges can test the system without uploading their own file.
+
+Example demo result:
+
+AI Detection:
+
+Likely AI Generated
+
+Possible Generator:
+
+OpenAI
+
+Confidence:
+
+91%
+
+Device:
+
+Not available
+
+C2PA:
+
+Available
+
+Social Media:
+
+Possible recompression detected
+
+Manipulation:
+
+Low
+
+Final Verdict:
+
+LIKELY AI GENERATED
+
+Clearly mark this as:
+
+«DEMO DATA»
+
+if it is not based on an actual uploaded file.
+
+---
+
+23. Most Important Goal
+
+The final website should not feel like a simple image uploader.
+
+It should feel like:
+
+AIMD
+
+AI Media Forensics & Provenance Platform
+
+The user uploads media and receives a complete forensic-style report answering:
+
+1. What type of file is this?
+
+2. What device captured it?
+
+3. When was it captured?
+
+4. Is metadata available?
+
+5. Does it contain Content Credentials?
+
+6. Is it likely AI-generated?
+
+7. What AI generator might have been used?
+
+8. Does it show manipulation?
+
+9. Does it show signs of social-media processing?
+
+10. What evidence supports the result?
+
+11. What is verified vs inferred?
+
+12. What is the final confidence-based verdict?
+
+Final instruction
+
+First inspect the existing AIMD codebase and identify the current upload, analysis, result, dashboard, and backend/service components.
+
+Then MODIFY the existing implementation.
+
+Do not delete working functionality.
+
+Do not replace the project with a mockup.
+
+Do not create fake AI detection results.
+
+Do not fabricate device/platform/generator information.
+
+Implement the new forensic workflow using real browser-side metadata extraction and real APIs/services where configured, with clear fallback states when a capability is unavailable.
+
+After implementation, ensure the complete website builds successfully and all existing routes/features continue to work.
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://digital-proof-trail.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/172bf56d-fc70-45c9-8abe-b7d5714ea4e1).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
 ```
-
-All provider calls run server-side only (`*.server.ts`). No API key ever reaches the browser.
-
-## Data model
-
-`profiles`, `scans`, `detection_results`, `provenance_results`, `forensic_results`,
-`media_segments`, `evidence_items`, `chain_of_custody_events`, `reports`, `media_fingerprints`.
-Every table has row-level security scoped to the owning user; storage policies restrict
-access to the user's own prefix.
-
-## Configuration
-
-Backend, database, auth, storage and AI reasoning are provisioned automatically.
-Optional keys (see `.env.example`) are server-side only:
-
-- `HIVE_API_KEY` — enables AI-generation, deepfake and AI-audio detection.
-  Without it, detection truthfully reports **unavailable** rather than guessing.
-- `SYNTHID_API_URL` / `SYNTHID_API_KEY` — optional SynthID verification endpoint.
-
-## Interpreting results
-
-Detection is probabilistic. Verdicts are `LIKELY_HUMAN`, `LIKELY_AI_GENERATED`,
-`LIKELY_MANIPULATED` or `INCONCLUSIVE`, each with a confidence value, supporting and
-contradicting evidence, and stated limitations. Every field is labelled
-**verified**, **inferred** or **unknown**.
