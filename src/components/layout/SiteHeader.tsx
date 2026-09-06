@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", label: "Home" },
-  { to: "/scan", label: "Scan" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/history", label: "History" },
+  // { to: "/scan", label: "Scan" },
+  // { to: "/dashboard", label: "Dashboard" },
+  // { to: "/history", label: "History" },
   { to: "/analyze", label: "Quick Analyze" },
   { to: "/technology", label: "Technology" },
   { to: "/about", label: "About" },
@@ -70,25 +70,25 @@ export function SiteHeader() {
             );
           })}
         </nav>
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X className="size-4" /> : <Menu className="size-4" />}
+        </Button>
+        {/* <div className="flex items-center gap-2">
 
-        <div className="flex items-center gap-2">
-          
           <Button asChild size="sm" className="hidden sm:inline-flex">
             <Link to="/scan">
               New Scan <ArrowRight className="size-4" />
             </Link>
           </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="lg:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="size-4" /> : <Menu className="size-4" />}
-          </Button>
-        </div>
+
+        </div> */}
       </div>
 
       {open ? (
