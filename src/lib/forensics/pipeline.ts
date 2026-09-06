@@ -3,7 +3,8 @@ import { analyzeFile } from "./fileAnalyzer";
 import { analyzeManipulation } from "./manipulationAnalyzer";
 import { analyzeProvenance } from "./provenanceAnalyzer";
 import { analyzeSocialMedia } from "./socialMediaAnalyzer";
-import { detectAi, identifyGenerator, scanAiSignals } from "./aiDetectionService";
+import { detectAi, identifyGenerator, scanAiSignals, type ContentModelResult } from "./aiDetectionService";
+import { detectMediaContent } from "@/lib/detect.functions";
 import { buildEvidence, buildTimeline, buildVerdict } from "./evidence";
 import type { ForensicReport, StepState } from "./types";
 
@@ -25,6 +26,55 @@ type Progress = (stepId: string) => void;
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
 
+const VISION_LIMIT = 20 * 1024 * 1024;
+
+function toBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+/** Perceptual analysis of the media content, run on the server. */
+async function analyzeContent(
+  bytes: Uint8Array,
+  mimeType: string,
+  kind: string,
+): Promise<ContentModelResult | null> {
+  if (kind !== "image" && kind !== "video" && kind !== "audio") return null;
+  if (bytes.byteLength > VISION_LIMIT) {
+    return {
+      status: "unavailable",
+      provider: "Lovable AI content analysis",
+      probability: null,
+      confidence: null,
+      deepfakeProbability: null,
+      likelyGenerator: null,
+      reasons: [],
+      message:
+        "Content analysis skipped — this file is larger than the 20 MB limit for perceptual analysis.",
+    };
+  }
+  try {
+    return (await detectMediaContent({
+      data: { base64: toBase64(bytes), mimeType, mediaKind: kind },
+    })) as ContentModelResult;
+  } catch (error) {
+    return {
+      status: "error",
+      provider: "Lovable AI content analysis",
+      probability: null,
+      confidence: null,
+      deepfakeProbability: null,
+      likelyGenerator: null,
+      reasons: [],
+      message: `Content analysis unavailable. ${(error as Error).message}`,
+    };
+  }
+}
+
 export async function runForensicPipeline(file: File, onStep: Progress): Promise<ForensicReport> {
   onStep("read");
   const buffer = await file.arrayBuffer();
@@ -42,7 +92,8 @@ export async function runForensicPipeline(file: File, onStep: Progress): Promise
   onStep("ai");
   await tick();
   const scan = scanAiSignals(bytes);
-  const aiDetection = await detectAi(file, scan, provenance, metadata);
+  const content = await analyzeContent(bytes, file.type, fileInfo.kind);
+  const aiDetection = await detectAi(file, scan, provenance, metadata, content);
   const possibleGenerator = identifyGenerator(scan, provenance, metadata);
 
   onStep("manipulation");

@@ -71,11 +71,23 @@ export function scanAiSignals(bytes: Uint8Array): SignalScan {
  * Combines hard, verifiable signals (provenance + embedded generator strings)
  * with an optional external detection provider. Never returns a synthetic score.
  */
+export interface ContentModelResult {
+  status: "ok" | "unavailable" | "error";
+  provider: string;
+  probability: number | null;
+  confidence: number | null;
+  deepfakeProbability: number | null;
+  likelyGenerator: string | null;
+  reasons: string[];
+  message: string;
+}
+
 export async function detectAi(
   file: File,
   scan: SignalScan,
   provenance: ProvenanceResult,
   metadata: MetadataResult,
+  content?: ContentModelResult | null,
 ): Promise<AiDetectionResult> {
   const reasons: string[] = [];
   const hardEvidence =
@@ -102,6 +114,32 @@ export async function detectAi(
     } catch {
       reasons.push("Configured AI-detection service returned an error");
     }
+  }
+
+  if (content && content.status === "ok" && content.probability !== null) {
+    const p = content.probability;
+    const modelReasons = content.reasons.length > 0 ? content.reasons : [content.message];
+    reasons.push(...modelReasons.map((r) => `Content analysis: ${r}`));
+    if (content.deepfakeProbability !== null && content.deepfakeProbability >= 50) {
+      reasons.push(`Content analysis: possible face/voice manipulation (${content.deepfakeProbability}%)`);
+    }
+    // Embedded hard evidence agreeing with the model raises confidence.
+    const base = content.confidence ?? 60;
+    const confidence = Math.min(97, hardEvidence && p >= 60 ? base + 8 : base);
+    return {
+      state: p >= 60 ? "generated" : p <= 30 ? "authentic" : "inconclusive",
+      probability: p,
+      confidence,
+      serviceName: content.provider,
+      serviceConfigured: true,
+      reasons,
+      message:
+        "This result comes from perceptual analysis of the media content itself, combined with any signals embedded in the file. It is probabilistic, not proof.",
+    };
+  }
+
+  if (content && content.status !== "ok" && !hardEvidence) {
+    reasons.push(content.message);
   }
 
   if (hardEvidence) {
