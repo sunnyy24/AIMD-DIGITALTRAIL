@@ -284,7 +284,9 @@ export function buildVerdict(
       label: "Likely AI Generated",
       confidence: ai.confidence ?? 70,
       explanation:
-        "The file carries embedded indicators of AI generation" +
+        (ai.serviceConfigured
+          ? "Analysis of the media content found indicators of AI generation"
+          : "The file carries embedded indicators of AI generation") +
         (provenance.aiIndicated ? ", including Content Credentials declaring generative media" : "") +
         ". This is an evidence-based indication; complete certainty is not possible.",
     };
