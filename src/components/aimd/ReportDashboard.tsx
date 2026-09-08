@@ -110,8 +110,9 @@ export function ReportDashboard({
   const quickFacts: { label: string; value: string; tone?: "safe" | "warn" | "danger" }[] = [
     {
       label: "AI probability",
-      value: ai.serviceConfigured ? `${ai.probability}%` : "Not tested",
-      tone: ai.probability >= 60 ? "danger" : ai.probability >= 40 ? "warn" : "safe",
+      value: ai.serviceConfigured && ai.probability !== null ? `${ai.probability}%` : "Not tested",
+      tone:
+        (ai.probability ?? 0) >= 60 ? "danger" : (ai.probability ?? 0) >= 40 ? "warn" : "safe",
     },
     {
       label: "Manipulation risk",
