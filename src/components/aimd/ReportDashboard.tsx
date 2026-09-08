@@ -45,10 +45,10 @@ import {
 import { ConfidenceRing } from "./ConfidenceRing";
 
 const VERDICT_STYLE = {
-  LIKELY_AUTHENTIC: { dot: "🟢", tone: "safe", ring: "border-verdict-safe/50 bg-verdict-safe/10" },
-  INCONCLUSIVE: { dot: "🟡", tone: "warn", ring: "border-verdict-warn/50 bg-verdict-warn/10" },
-  LIKELY_AI_GENERATED: { dot: "🔴", tone: "danger", ring: "border-verdict-danger/50 bg-verdict-danger/10" },
-  LIKELY_MANIPULATED: { dot: "🔴", tone: "danger", ring: "border-verdict-danger/50 bg-verdict-danger/10" },
+  LIKELY_AUTHENTIC: { dot: "bg-verdict-safe", tone: "safe", ring: "border-verdict-safe/50 bg-verdict-safe/10" },
+  INCONCLUSIVE: { dot: "bg-verdict-warn", tone: "warn", ring: "border-verdict-warn/50 bg-verdict-warn/10" },
+  LIKELY_AI_GENERATED: { dot: "bg-verdict-danger", tone: "danger", ring: "border-verdict-danger/50 bg-verdict-danger/10" },
+  LIKELY_MANIPULATED: { dot: "bg-verdict-danger", tone: "danger", ring: "border-verdict-danger/50 bg-verdict-danger/10" },
 } as const;
 
 /** One-sentence, plain-language answer shown at the very top. */
@@ -181,7 +181,7 @@ export function ReportDashboard({
 
           <div>
             <p className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-              <span className="mr-2">{v.dot}</span>
+              <span className={cn("mr-3 inline-block size-4 rounded-full align-middle sm:size-5", v.dot)} />
               {report.verdict.label.toUpperCase()}
             </p>
             <p className="mt-3 max-w-xl text-base leading-relaxed font-medium">
